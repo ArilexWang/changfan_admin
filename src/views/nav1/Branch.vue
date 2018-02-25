@@ -69,7 +69,6 @@ export default {
                 console.log(response)
             }).catch(function(error) {
             })
-
         },
         cancel() {
             this.$router.push({ name: '主页', path: '/table' })

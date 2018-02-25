@@ -5,7 +5,6 @@
         <el-upload action="http://upload.qiniup.com" :file-list=main_banners list-type="picture-card" :on-preview="handlePictureCardPreview" :on-remove="handleBannerRemove" :data="postData" :on-success="handleBannerSuccess">
             <i class="el-icon-plus"></i>
         </el-upload>
-
         <el-dialog :visible.sync="dialogVisible" size="tiny">
             <img width="100%" :src="previewImageUrl" alt="">
         </el-dialog>
@@ -13,7 +12,6 @@
         <div></div>
         <el-button @click="save" type="primary">保存</el-button>
         <el-button @click="cancel">取消</el-button>
-
     </section>
 </template>
 
@@ -55,7 +53,6 @@ export default {
                 var dic = {}
                 dic.picture = this.main_banners[i].url
                 banners.push(dic)
-
             }
             var picture = JSON.stringify(banners)
             this.$http.post("http://118.25.20.50:8000/scavenger/createBanner/", { picture }, { headers: "Content-Type:application/x-www-form-urlencoded" }).then(function(response) {

@@ -450,12 +450,6 @@ export default {
 			}).catch(function(error) {
 				console.log(error)
 			})
-			// var para = this.villa
-			// getVillaInfoById(para).then(function(res) {
-			// 	console.log(res);
-			// }).catch(function(res) {
-			// 	console.log(res)
-			// })
 		},
 		cancel() {
 			this.$router.push({ name: '主页', path: '/table' })

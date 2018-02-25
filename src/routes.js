@@ -34,11 +34,12 @@ let routes = [
         iconCls: 'el-icon-message',//图标样式class
         children: [
             { path: '/main', component: Main, name: 'main', hidden: true },
-            { path: '/table', component: Table, name: '主页' },
-            { path: '/form', component: Form, name: '新建' },
-            { path: '/comment', component: Comment, name: '评论' },
+            { path: '/table', component: Table, name: '品牌' },
+            { path: '/form', component: Form, name: '型号' },
+            { path: '/comment', component: Comment, name: '故障信息' },
             { path: '/banner', component: Banner, name: '主界面滑动'},
-            { path: '/branch', component: Branch, name: '分店'}
+            { path: '/branch', component: Branch, name: '分店'},
+            { path: '/branch', component: Branch, name: '订单信息'}
         ]
     },
     

@@ -5,7 +5,7 @@
 		<el-col :span="24" class="toolbar" style="padding-bottom: 0px;">
 			<el-form :inline="true" :model="filters">
 				<el-form-item>
-					<el-input v-model="filters.name" placeholder="别墅名"></el-input>
+					<el-input v-model="filters.name" placeholder="品牌名"></el-input>
 				</el-form-item>
 				<el-form-item>
 					<el-button type="primary" v-on:click="searchVillaByKey">查询</el-button>
@@ -23,23 +23,69 @@
 			</el-table-column>
 			<el-table-column type="index" width="60">
 			</el-table-column>
-			<el-table-column prop="name" label="别墅名" width="120" sortable>
+			<el-table-column prop="thumbnail" label="logo" width="120" sortable>
+				<template scope="scope">
+					<img :src="scope.row.thumbnail" alt="" width="30px">
+				</template>
 			</el-table-column>
-			<el-table-column prop="id" label="ID" width="120" sortable>
+			<el-table-column prop="name" label="品牌名" width="120" sortable>
 			</el-table-column>
-			<el-table-column prop="address" label="地址" min-width="180" sortable>
+			<el-table-column prop="brandID" label="ID" width="120" sortable>
 			</el-table-column>
 
 			<el-table-column label="操作" width="300">
 				<template scope="scope">
 					<el-button size="small" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
-					<el-button size="small" @click="handleComment(scope.$index,scope.row)">查看评论</el-button>
+					<el-button size="small" @click="handleComment(scope.$index,scope.row)">查看型号</el-button>
 					<el-button type="danger" size="small" @click="handleDel(scope.$index, scope.row)">删除</el-button>
 
 				</template>
 			</el-table-column>
 		</el-table>
 
+		<!--编辑界面-->
+		<el-dialog title="编辑" v-model="editFormVisible" :close-on-click-modal="false">
+			<el-form :model="editForm" label-width="80px" :rules="editFormRules" ref="editForm">
+				<el-form-item label="品牌名" prop="name">
+					<el-input v-model="editForm.name" auto-complete="off"></el-input>
+				</el-form-item>
+				<el-form-item label="logo" prop="name">
+					<el-upload action="http://upload.qiniup.com" :show-file-list="false" list-type="picture-card" :on-preview="handlePictureCardPreview" :data="postData" :on-success="handleAvatarSuccess">
+						<img v-if="editForm.thumbnail" :src="editForm.thumbnail" class="avatar" style="width:148px;height:148px">
+						<i v-else class="el-icon-plus avatar-uploader-icon"></i>
+					</el-upload>
+				</el-form-item>
+				<el-form-item label="品牌描述" prop="name">
+					<el-input v-model="editForm.description" auto-complete="off"></el-input>
+				</el-form-item>
+			</el-form>
+			<div slot="footer" class="dialog-footer">
+				<el-button @click.native="editFormVisible = false">取消</el-button>
+				<el-button type="primary" @click.native="editSubmit" :loading="editLoading">提交</el-button>
+			</div>
+		</el-dialog>
+		
+		<!--新增界面-->
+		<el-dialog title="新增" v-model="addFormVisible" :close-on-click-modal="false">
+			<el-form :model="addForm" label-width="80px" :rules="addFormRules" ref="addForm">
+				<el-form-item label="品牌名" prop="name">
+					<el-input v-model="addForm.name" auto-complete="off"></el-input>
+				</el-form-item>
+				<el-form-item label="logo" prop="name">
+					<el-upload action="http://upload.qiniup.com" :show-file-list="false" list-type="picture-card" :on-preview="handlePictureCardPreview" :data="postData" :on-success="createAvatarSuccess">
+						<img v-if="addForm.thumbnail" :src="addForm.thumbnail" class="avatar" style="width:148px;height:148px">
+						<i v-else class="el-icon-plus avatar-uploader-icon"></i>
+					</el-upload>
+				</el-form-item>
+				<el-form-item label="品牌描述" prop="name">
+					<el-input v-model="addForm.description" auto-complete="off"></el-input>
+				</el-form-item>
+			</el-form>
+			<div slot="footer" class="dialog-footer">
+				<el-button @click.native="addFormVisible = false">取消</el-button>
+				<el-button type="primary" @click.native="addSubmit" :loading="addLoading">提交</el-button>
+			</div>
+		</el-dialog>
 		<!--工具条-->
 		<el-col :span="24" class="toolbar">
 			<!--<el-button type="danger" @click="batchRemove" :disabled="this.sels.length===0">批量删除</el-button>-->
@@ -53,7 +99,7 @@
 <script>
 import util from '../../common/js/util'
 //import NProgress from 'nprogress'
-import { getUserListPage, removeUser, batchRemoveUser, editUser, addUser, getVillaByKey, getVillaInfoById, getAllVillas } from '../../api/api';
+import { getUserListPage, removeUser, batchRemoveUser, editUser, addUser, getVillaByKey, getVillaInfoById, getAllVillas, getAllBrands, setElectronicsBrand } from '../../api/api';
 import CityInfo from '../../common/js/city-data'
 import base_image_url from '../../common/js/base_url'
 import Form from './Form'
@@ -84,10 +130,7 @@ export default {
 			editForm: {
 				id: 0,
 				name: '',
-				sex: -1,
-				age: 0,
-				birth: '',
-				addr: ''
+				thumbnail: "",
 			},
 
 			addFormVisible: false,//新增界面是否显示
@@ -99,15 +142,14 @@ export default {
 			},
 			//新增界面数据
 			addForm: {
+				id: 0,
 				name: '',
-				sex: -1,
-				age: 0,
-				birth: '',
-				addr: ''
+				thumbnail: "",
+				
 			},
 			main_banners: [],
 			postData: {
-				token: '93L43E91oA1cbC9k40ZK2eSeOCqxxjJz1SsL4NGv:NcyOYv94e0gg883xh7O_JfPhIlM=:eyJzY29wZSI6IjUxYmllc2h1IiwiZGVhZGxpbmUiOjE1MTc1MjU2ODl9'
+				token: '93L43E91oA1cbC9k40ZK2eSeOCqxxjJz1SsL4NGv:QF7ZWpzyVCD1_vuo3GJhCovSoAI=:eyJzY29wZSI6IjUxYmllc2h1IiwiZGVhZGxpbmUiOjE5NTE1NTkxNDR9'
 			},
 			previewImageUrl: '',
 			dialogVisible: false,
@@ -149,7 +191,6 @@ export default {
 				console.log(res)
 			})
 		},
-
 		searchVillaByKey() {
 			let para = {
 				name: this.filters.name
@@ -168,6 +209,16 @@ export default {
 			this.previewImageUrl = file.url;
 			this.dialogVisible = true;
 		},
+		handleAvatarSuccess(res, file) {
+			console.log(file)
+			this.editForm.thumbnail = base_image_url + res.key
+			console.log(this.editForm)
+		},
+		createAvatarSuccess(res, file) {
+			console.log(file)
+			this.addForm.thumbnail = base_image_url + res.key
+			console.log(this.editForm)
+		},
 		//上传成功
 		handleBannerSuccess(res) {
 			var imgurl = base_image_url + res.key
@@ -183,29 +234,52 @@ export default {
 		//删除
 		handleDel: function(index, row) {
 			this.listLoading = true;
-			let para = { id: this.villas[index].id };
-			console.log(para)
-			this.$http.post("http://118.25.6.157:8686/homeparty/manage/deleteVillaById", JSON.stringify(para), { headers: "Content-Type:application/json" }).then(function(response) {
+			let para = { brandID: this.villas[index].brandID };
+			this.$http.post("http://118.25.20.50:8000/scavenger/deleteElectronicsBrandByID/", JSON.stringify(para), { headers: "Content-Type:application/json" }).then(function(response) {
 				this.listLoading = false;
 				console.log(response)
-				this.getVillas()
+				this.getBrands()
 			}).catch(function(error) {
 				console.log(error)
 			})
 		},
 		//显示编辑界面
 		handleEdit: function(index, row) {
-			console.log(this.villas[index].id)
-			var _id = this.villas[index].id
-			this.$router.push({ name: '新建', path: '/form', params: { id: _id }  })
+			this.editFormVisible = true;
+			this.editForm = Object.assign({}, row);
 		},
 		//显示新增界面
 		handleAdd: function() {
-			this.$router.push({ name: '新建', path: '/form' })
+			this.addFormVisible = true;
+			this.addForm = {
+				name: '',
+				thumbnail: "",
+			}
 		},
 		handleComment: function(index, row) {
 			var _id = this.villas[index].id
 			this.$router.push({ name: '评论', path: '/comment', params: { id: _id } })
+		},
+		getBrands: function() {
+			this.villas = []
+			getAllBrands().then((res) => {
+				console.log(res.data)
+				for (var item in res.data) {
+					var tempbrand = {}
+					console.log(res.data[item])
+					var temp = res.data[item]
+					tempbrand.brandID = temp.pk.toString()
+					tempbrand.name = temp.fields._name
+					tempbrand.thumbnail = temp.fields._thumbnail
+					tempbrand.description = temp.fields._description
+					this.villas.push(tempbrand)
+				}
+			})
+		},
+		setBrands: function(para) {
+			setElectronicsBrand(para).then((res) => {
+				console.log(res)
+			})
 		},
 		//编辑
 		editSubmit: function() {
@@ -215,18 +289,18 @@ export default {
 						this.editLoading = true;
 						//NProgress.start();
 						let para = Object.assign({}, this.editForm);
-						para.birth = (!para.birth || para.birth == '') ? '' : util.formatDate.format(new Date(para.birth), 'yyyy-MM-dd');
-						editUser(para).then((res) => {
+						var params = JSON.stringify(para)
+						console.log(params)
+						this.$http.post("http://118.25.20.50:8000/scavenger/setElectronicsBrand/",  params  , { headers:  "Content-Type:application/json" }).then(function(response) {
 							this.editLoading = false;
-							//NProgress.done();
-							this.$message({
-								message: '提交成功',
-								type: 'success'
-							});
-							this.$refs['editForm'].resetFields();
+							console.log(response)
 							this.editFormVisible = false;
-							this.getUsers();
-						});
+							this.getBrands()
+	
+						}).catch(function(error) {
+							console.log(error)
+						})
+
 					});
 				}
 			});
@@ -239,18 +313,16 @@ export default {
 						this.addLoading = true;
 						//NProgress.start();
 						let para = Object.assign({}, this.addForm);
-						para.birth = (!para.birth || para.birth == '') ? '' : util.formatDate.format(new Date(para.birth), 'yyyy-MM-dd');
-						addUser(para).then((res) => {
+						var params = JSON.stringify(para)
+						this.$http.post("http://118.25.20.50:8000/scavenger/createElectronicsBrand/",  params  , { headers:  "Content-Type:application/json" }).then(function(response) {
 							this.addLoading = false;
-							//NProgress.done();
-							this.$message({
-								message: '提交成功',
-								type: 'success'
-							});
-							this.$refs['addForm'].resetFields();
+							console.log(response)
 							this.addFormVisible = false;
-							this.getUsers();
-						});
+							this.getBrands()
+	
+						}).catch(function(error) {
+							console.log(error)
+						})
 					});
 				}
 			});
@@ -261,7 +333,7 @@ export default {
 		//批量删除
 		batchRemove: function() {
 			var ids = this.sels.map(item => item.id).toString();
-			this.$confirm('确认删除选中记录吗？', '提示', {
+			this.$confirm('确认删除选中记录吗？', '提示', {  
 				type: 'warning'
 			}).then(() => {
 				this.listLoading = true;
@@ -284,15 +356,11 @@ export default {
 
 	mounted() {
 		var para = {}
-		this.getUsers();
-		var that = this
-		getAllVillas().then(function(res) {
-			console.log(res.data);
-			that.villas = res.data
+		// this.getUsers();
+		// var that = this
+		this.getBrands()
+		// this.villas = [{ name: "苹果", id: "123", thumbnail: "http://p3pu3eqqb.bkt.clouddn.com/iphone3.png" }]
 
-		}).catch(function(res) {
-			console.log(res)
-		})
 	}
 }
 
