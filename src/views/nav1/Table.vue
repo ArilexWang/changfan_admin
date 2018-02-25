@@ -32,13 +32,11 @@
 			</el-table-column>
 			<el-table-column prop="brandID" label="ID" width="120" sortable>
 			</el-table-column>
-
 			<el-table-column label="操作" width="300">
 				<template scope="scope">
 					<el-button size="small" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
 					<el-button size="small" @click="handleComment(scope.$index,scope.row)">查看型号</el-button>
 					<el-button type="danger" size="small" @click="handleDel(scope.$index, scope.row)">删除</el-button>
-
 				</template>
 			</el-table-column>
 		</el-table>
@@ -86,6 +84,7 @@
 				<el-button type="primary" @click.native="addSubmit" :loading="addLoading">提交</el-button>
 			</div>
 		</el-dialog>
+
 		<!--工具条-->
 		<el-col :span="24" class="toolbar">
 			<!--<el-button type="danger" @click="batchRemove" :disabled="this.sels.length===0">批量删除</el-button>-->
@@ -257,8 +256,9 @@ export default {
 			}
 		},
 		handleComment: function(index, row) {
-			var _id = this.villas[index].id
-			this.$router.push({ name: '评论', path: '/comment', params: { id: _id } })
+			var _id = this.villas[index].brandID
+			var _name = this.villas[index].name
+			this.$router.push({ name: '型号', path: '/form', params: { id: _id,name: _name} })
 		},
 		getBrands: function() {
 			this.villas = []

@@ -39,7 +39,7 @@ let routes = [
             { path: '/comment', component: Comment, name: '故障信息' },
             { path: '/banner', component: Banner, name: '主界面滑动'},
             { path: '/branch', component: Branch, name: '分店'},
-            { path: '/branch', component: Branch, name: '订单信息'}
+            // { path: '/branch', component: Branch, name: '订单信息'}
         ]
     },
     
