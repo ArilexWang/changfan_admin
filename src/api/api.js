@@ -68,6 +68,10 @@ export const getAllBrands = params => {
     return instance.get(host + "getAllElectronicsBrand/");
 };
 
+export const getAllMalfunctionCategory = params => {
+    return instance.get(host + "getAllMalfunctionCategory/");
+};
+
 export const setElectronicsBrand = params => {
     console.log(params);
     return axios.post(host + "setElectronicsBrand/", {
