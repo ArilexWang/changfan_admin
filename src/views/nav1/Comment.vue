@@ -58,7 +58,7 @@
 					<el-input v-model="editForm.name" auto-complete="off"></el-input>
 				</el-form-item>
                 <el-form-item label="图标" prop="name">
-					<el-upload action="http://upload.qiniup.com" :show-file-list="false" list-type="picture-card" :on-preview="handlePictureCardPreview" :data="postData" :on-success="handleAvatarSuccess">
+					<el-upload action="http://upload.qiniup.com" :show-file-list="false" list-type="picture-card" :on-preview="handlePictureCardPreview" :data="postData" :on-success="handleIconSuccess">
 						<img v-if="editForm.icon" :src="editForm.icon" class="avatar" style="width:148px;height:148px">
 						<i v-else class="el-icon-plus avatar-uploader-icon"></i>
 					</el-upload>
@@ -217,6 +217,11 @@ export default {
 			this.previewImageUrl = file.url;
 			this.dialogVisible = true;
 		},
+		handleIconSuccess(res, file) {
+			console.log(file)
+			this.editForm.icon = base_image_url + res.key
+			console.log(this.editForm)
+		},
 		handleAvatarSuccess(res, file) {
 			console.log(file)
 			this.editForm.thumbnail = base_image_url + res.key
@@ -243,7 +248,7 @@ export default {
 		handleDel: function(index, row) {
 			this.listLoading = true;
 			let para = { modelID: this.villas[index].modelID };
-			this.$http.post("http://118.25.20.50:8000/scavenger/deleteElectronicsModelByID/", JSON.stringify(para), { headers: "Content-Type:application/json" }).then(function(response) {
+			this.$http.post(host + "deleteElectronicsModelByID/", JSON.stringify(para), { headers: "Content-Type:application/json" }).then(function(response) {
 				this.listLoading = false;
 				console.log(response)
 				this.getModel(this.brandID)
@@ -280,7 +285,7 @@ export default {
 						let para = Object.assign({}, this.editForm);
 						var params = JSON.stringify(para)
 						console.log(params)
-						this.$http.post("http://118.25.20.50:8000/scavenger/setMalfunctionCategory/", params, { headers: "Content-Type:application/json" }).then(function(response) {
+						this.$http.post(host + "setMalfunctionCategory/", params, { headers: "Content-Type:application/json" }).then(function(response) {
 							this.editLoading = false;
 							this.editFormVisible = false;
 							this.getMalfunction()
