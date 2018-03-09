@@ -2,7 +2,7 @@ import axios from 'axios';
 
 let base = '';
 
-let host = 'http://118.25.20.50:8000/scavenger/';
+let host = 'https://yixiuge.xyz/scavenger/';
 let manage = 'https://ferrariwang.cn/homeparty/manage'
 var instance = axios.create({
     headers: {
@@ -65,6 +65,7 @@ export const getAllVillas = params => {
 };
 
 export const getAllBrands = params => {
+    console.log(host)
     return instance.get(host + "getAllElectronicsBrand/");
 };
 
@@ -81,4 +82,8 @@ export const setElectronicsBrand = params => {
             'Content-Type': 'application/x-www-form-urlencoded'
         }
     });
+};
+
+export const getAllMalfunctionDetail = params => {
+    return instance.get(host+"getAllMalfunctionDetail/");
 };

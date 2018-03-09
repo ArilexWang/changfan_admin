@@ -23,6 +23,7 @@
 
 <script>
 import base_image_url from '../../common/js/base_url'
+import host from '../../common/js/host'
 export default {
     data() {
         return {
@@ -65,7 +66,7 @@ export default {
             console.log(banners)
             var para = JSON.stringify(banners)
             console.log(para)
-            this.$http.post("http://118.25.20.50:8000/scavenger/createMaintenanceCenter/", para, { headers: "Content-Type:application/json" }).then(function(response) {
+            this.$http.post(host+"createMaintenanceCenter/", para, { headers: "Content-Type:application/json" }).then(function(response) {
                 console.log(response)
             }).catch(function(error) {
             })
@@ -74,7 +75,8 @@ export default {
             this.$router.push({ name: '主页', path: '/table' })
         },
         getBanner() {
-            this.$http.get("http://118.25.20.50:8000/scavenger/getAllMaintenanceCenter/", { headers: "Content-Type:application/json" }).then(function(response) {
+            console.log(host)
+            this.$http.get(host+"getAllMaintenanceCenter/", { headers: "Content-Type:application/json" }).then(function(response) {
                 console.log(response.body)
                 for(var item in response.body){
                     console.log(response.body[item].fields)

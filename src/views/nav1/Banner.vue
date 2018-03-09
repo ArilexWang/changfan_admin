@@ -17,6 +17,7 @@
 
 <script>
 import base_image_url from '../../common/js/base_url'
+import host from '../../common/js/host'
 import axios from 'axios';
 export default {
     data() {
@@ -55,7 +56,7 @@ export default {
                 banners.push(dic)
             }
             var picture = JSON.stringify(banners)
-            this.$http.post("http://118.25.20.50:8000/scavenger/createBanner/", { picture }, { headers: "Content-Type:application/x-www-form-urlencoded" }).then(function(response) {
+            this.$http.post("https://yixiuge.xyz:8000/scavenger/"+"createBanner/", { picture }, { headers: "Content-Type:application/x-www-form-urlencoded" }).then(function(response) {
                 console.log(response)
             }).catch(function(error) {
             })
@@ -64,7 +65,7 @@ export default {
             this.$router.push({ name: '主页', path: '/table' })
         },
         getBanner() {
-            this.$http.get("http://118.25.20.50:8000/scavenger/getAllBanner/", { headers: "Content-Type:application/json" }).then(function(response) {
+            this.$http.get(host+"getAllBanner/", { headers: "Content-Type:application/json" }).then(function(response) {
                 console.log(response)
                 console.log(response.body[0].fields._picture)
                 var pictures = JSON.parse(response.body[0].fields._picture)

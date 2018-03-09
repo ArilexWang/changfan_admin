@@ -12,7 +12,7 @@ import echarts from './views/charts/echarts.vue'
 import Comment from './views/nav1/Comment.vue'
 import Banner from './views/nav1/Banner.vue'
 import Branch from './views/nav1/Branch.vue'
-
+import MalfunctionDetail from './views/nav1/MalfunctionDetail.vue'
 let routes = [
     {
         path: '/login',
@@ -40,7 +40,7 @@ let routes = [
             { path: '/comment', component: Comment, name: '故障信息' },
             { path: '/banner', component: Banner, name: '主界面滑动'},
             { path: '/branch', component: Branch, name: '分店'},
-            // { path: '/branch', component: Branch, name: '订单信息'}
+            { path: '/malfunctiondetail', component: MalfunctionDetail, name: '故障细节'}
         ]
     },
     

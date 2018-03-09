@@ -105,6 +105,7 @@ import { getUserListPage, removeUser, batchRemoveUser, editUser, addUser, getVil
 import CityInfo from '../../common/js/city-data'
 import base_image_url from '../../common/js/base_url'
 import Form from './Form'
+import host from '../../common/js/host'
 
 export default {
 	data() {
@@ -238,7 +239,7 @@ export default {
 		handleDel: function(index, row) {
 			this.listLoading = true;
 			let para = { modelID: this.villas[index].modelID };
-			this.$http.post("http://118.25.20.50:8000/scavenger/deleteElectronicsModelByID/", JSON.stringify(para), { headers: "Content-Type:application/json" }).then(function(response) {
+			this.$http.post(host+"deleteElectronicsModelByID/", JSON.stringify(para), { headers: "Content-Type:application/json" }).then(function(response) {
 				this.listLoading = false;
 				console.log(response)
 				this.getModel(this.brandID)
@@ -279,7 +280,7 @@ export default {
 						let para = Object.assign({}, this.editForm);
 						var params = JSON.stringify(para)
 						console.log(params)
-						this.$http.post("http://118.25.20.50:8000/scavenger/setElectronicsModel/", params, { headers: "Content-Type:application/json" }).then(function(response) {
+						this.$http.post(host+"setElectronicsModel/", params, { headers: "Content-Type:application/json" }).then(function(response) {
 							this.editLoading = false;
 							this.editFormVisible = false;
 							this.getModel(this.brandID)
@@ -302,7 +303,8 @@ export default {
 						para.color = "a"
 						var params = JSON.stringify(para)
 						console.log(params)
-						this.$http.post("http://118.25.20.50:8000/scavenger/createElectronicsModel/", params, { headers: "Content-Type:application/json" }).then(function(response) {
+						console.log(host)
+						this.$http.post(host+"createElectronicsModel/", params, { headers: "Content-Type:application/json" }).then(function(response) {
 							this.addLoading = false;
 							console.log(response)
 							this.addFormVisible = false;
@@ -344,7 +346,7 @@ export default {
 			this.villas = []
 			var para = { brandID: id }
 			var params = JSON.stringify(para)
-			this.$http.post("http://118.25.20.50:8000/scavenger/getElectronicsModelByBrand/", params, { headers: "Content-Type:application/json" }).then(function(response) {
+			this.$http.post(host+"getElectronicsModelByBrand/", params, { headers: "Content-Type:application/json" }).then(function(response) {
 				console.log(response)
 				for(var item in response.body){
 					var tempmodel = {}

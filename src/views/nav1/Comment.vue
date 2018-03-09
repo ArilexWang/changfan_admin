@@ -119,7 +119,7 @@ import { getUserListPage, removeUser, batchRemoveUser, editUser, addUser, getAll
 import CityInfo from '../../common/js/city-data'
 import base_image_url from '../../common/js/base_url'
 import Form from './Form'
-
+import host from '../../common/js/host'
 export default {
 	data() {
 		return {

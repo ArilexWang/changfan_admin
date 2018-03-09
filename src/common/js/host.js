@@ -1,5 +1,5 @@
 
 
-var host = "118.25.20.50:8000/scavenger/"
+var host = "https://yixiuge.xyz/scavenger/"
 
 export default  host= host

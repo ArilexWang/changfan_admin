@@ -102,6 +102,7 @@ import { getUserListPage, removeUser, batchRemoveUser, editUser, addUser, getVil
 import CityInfo from '../../common/js/city-data'
 import base_image_url from '../../common/js/base_url'
 import Form from './Form'
+import host from '../../common/js/host'
 
 export default {
 	data() {
@@ -291,7 +292,7 @@ export default {
 						let para = Object.assign({}, this.editForm);
 						var params = JSON.stringify(para)
 						console.log(params)
-						this.$http.post("http://118.25.20.50:8000/scavenger/setElectronicsBrand/",  params  , { headers:  "Content-Type:application/json" }).then(function(response) {
+						this.$http.post(host+"setElectronicsBrand/",  params  , { headers:  "Content-Type:application/json" }).then(function(response) {
 							this.editLoading = false;
 							console.log(response)
 							this.editFormVisible = false;
@@ -314,7 +315,7 @@ export default {
 						//NProgress.start();
 						let para = Object.assign({}, this.addForm);
 						var params = JSON.stringify(para)
-						this.$http.post("http://118.25.20.50:8000/scavenger/createElectronicsBrand/",  params  , { headers:  "Content-Type:application/json" }).then(function(response) {
+						this.$http.post(host+"createElectronicsBrand/",  params  , { headers:  "Content-Type:application/json" }).then(function(response) {
 							this.addLoading = false;
 							console.log(response)
 							this.addFormVisible = false;
