@@ -56,7 +56,7 @@ export default {
                 banners.push(dic)
             }
             var picture = JSON.stringify(banners)
-            this.$http.post("https://yixiuge.xyz:8000/scavenger/"+"createBanner/", { picture }, { headers: "Content-Type:application/x-www-form-urlencoded" }).then(function(response) {
+            this.$http.post(host+"createBanner/", { picture }, { headers: "Content-Type:application/x-www-form-urlencoded" }).then(function(response) {
                 console.log(response)
             }).catch(function(error) {
             })
