@@ -235,7 +235,7 @@ export default {
 		handleDel: function(index, row) {
 			this.listLoading = true;
 			let para = { brandID: this.villas[index].brandID };
-			this.$http.post("http://118.25.20.50:8000/scavenger/deleteElectronicsBrandByID/", JSON.stringify(para), { headers: "Content-Type:application/json" }).then(function(response) {
+			this.$http.post(host + "deleteElectronicsBrandByID/", JSON.stringify(para), { headers: "Content-Type:application/json" }).then(function(response) {
 				this.listLoading = false;
 				console.log(response)
 				this.getBrands()
