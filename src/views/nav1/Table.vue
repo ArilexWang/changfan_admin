@@ -360,7 +360,7 @@ export default {
 		// this.getUsers();
 		// var that = this
 		this.getBrands()
-		// this.villas = [{ name: "苹果", id: "123", thumbnail: "http://p3pu3eqqb.bkt.clouddn.com/iphone3.png" }]
+
 
 	}
 }

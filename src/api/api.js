@@ -3,7 +3,6 @@ import axios from 'axios';
 let base = '';
 
 let host = 'https://yixiuge.xyz/scavenger/';
-let manage = 'https://ferrariwang.cn/homeparty/manage'
 var instance = axios.create({
     headers: {
         'Content-type': 'application/json'
@@ -86,4 +85,8 @@ export const setElectronicsBrand = params => {
 
 export const getAllMalfunctionDetail = params => {
     return instance.get(host+"getAllMalfunctionDetail/");
+};
+
+export const getAllOrder = params => {
+    return instance.get(host+"getAllOrder/");
 };

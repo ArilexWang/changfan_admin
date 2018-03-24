@@ -11,7 +11,7 @@
                     <el-input v-model="filters.name" placeholder="故障大类"></el-input>
                 </el-form-item>
                 <el-form-item>
-                    <el-button type="primary" v-on:click="searchVillaByKey">查询</el-button>
+                    <el-button type="primary">查询</el-button>
                 </el-form-item>
                 <el-form-item>
                     <el-button type="primary" @click="handleAdd">新增</el-button>
@@ -30,13 +30,13 @@
             </el-table-column>
             <el-table-column prop="price" label="价格" width="120" sortable>
             </el-table-column>
-            <el-table-column prop="modelID" label="型号ID" width="120" sortable>
+            <el-table-column prop="brandName" label="品牌" width="120" sortable>
             </el-table-column>
-            <el-table-column prop="categoryID" label="故障大类ID" width="140" sortable>
+            <el-table-column prop="modelName" label="型号名" width="120" sortable>
             </el-table-column>
-            <el-table-column prop="detailID" label="ID" width="120" sortable>
+            <el-table-column prop="_categoryName" label="故障大类" width="140" sortable>
             </el-table-column>
-
+            
             <el-table-column label="操作" width="300">
                 <template scope="scope">
                     <el-button size="small" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
@@ -45,6 +45,12 @@
                 </template>
             </el-table-column>
         </el-table>
+
+        <!--工具条-->
+        <el-col :span="24" class="toolbar">
+            <el-pagination layout="prev, pager, next" @current-change="handleCurrentChange" :page-size="20" :total="total" style="float:right;">
+            </el-pagination>
+        </el-col>
 
         <!--编辑界面-->
         <el-dialog title="编辑" v-model="editFormVisible" :close-on-click-modal="false">
@@ -116,13 +122,6 @@
             </div>
         </el-dialog>
 
-        <!--工具条-->
-        <el-col :span="24" class="toolbar">
-
-            <el-pagination layout="prev, pager, next" @current-change="handleCurrentChange" :page-size="20" :total="total" style="float:right;">
-            </el-pagination>
-        </el-col>
-
     </section>
 </template>
 
@@ -144,7 +143,7 @@ export default {
                 Form
             },
             users: [],
-            total: 0,
+            total: 6,
             page: 1,
             listLoading: false,
             sels: [],//列表选中列
@@ -243,7 +242,11 @@ export default {
             this.$router.push({ name: '型号', path: '/form', params: { id: _id } })
         },
 
-
+        handleCurrentChange: function(val) {
+            console.log(val)
+            this.page = val
+            this.getMalfunctionDetail()
+        },
         //编辑
         editSubmit: function() {
             this.$refs.editForm.validate((valid) => {
@@ -334,15 +337,69 @@ export default {
                     tempcata.repairInstructions = temp.fields._repairInstructions
                     tempcata.repairMethod = temp.fields._repairMethod
                     tempcata.isPopular = temp.fields._isPopular
-                    console.log(tempcata)
+                    tempcata.modelName = temp.fields._modelName
+                    tempcata.brandName = temp.fields._brandName
+                    tempcata._categoryName = temp.fields._categoryName
                     this.objects.push(tempcata)
                 }
+                this.total = 120
+                this.getMalfunctionDetailByBrand(this.page)
             })
-        }
+        },
+        getMalfunctionDetailByBrand: function(page) {
+            var _objects = []
+            console.log(page)
+            console.log(this.objects)
+            if (page === 1) {
+                this.objects.forEach(function(element) {
+                    if (element.brandName === " 苹果") {
+                        console.log(element)
+                        _objects.push(element)
+                    }
+                }, this);
+            } else if (page === 2) {
+                this.objects.forEach(function(element) {
+                    if (element.brandName === " 华为") {
+                        _objects.push(element)
+                    }
+                }, this);
+            }
+            else if (page == 3) {
+                this.objects.forEach(function(element) {
+                    if (element.brandName === " 小米") {
+                        _objects.push(element)
+                    }
+                }, this);
+            }
+            else if (page == 4) {
+                this.objects.forEach(function(element) {
+                    if (element.brandName === " vivo") {
+                        _objects.push(element)
+                    }
+                }, this);
+            }
+            else if (page == 5) {
+                this.objects.forEach(function(element) {
+                    if (element.brandName === " 三星") {
+                        _objects.push(element)
+                    }
+                }, this);
+            }
+            else if (page == 6) {
+                this.objects.forEach(function(element) {
+                    if (element.brandName === "oppo ") {
+                        _objects.push(element)
+                    }
+                }, this);
+            }
+            console.log(_objects)
+            this.objects = _objects
+        },
     },
 
     mounted() {
         this.getMalfunctionDetail()
+
     },
 
 }
