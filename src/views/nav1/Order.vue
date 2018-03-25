@@ -13,7 +13,7 @@
                 <el-form-item>
                     <el-button type="primary">查询</el-button>
                 </el-form-item>
-                
+
             </el-form>
         </el-col>
 
@@ -70,7 +70,7 @@
                     <el-input v-model="editForm._staffComment" auto-complete="off"></el-input>
                     <el-button @click.native="commentSubmit" style="margin-top:10px">保存备注</el-button>
                 </el-form-item>
-               
+
             </el-form>
             <div slot="footer" class="dialog-footer">
                 <el-button @click.native="editFormVisible = false">取消</el-button>
@@ -115,9 +115,9 @@
 
         <!--工具条-->
         <!--<el-col :span="24" class="toolbar">
-            <el-pagination layout="prev, pager, next" @current-change="handleCurrentChange" :page-size="20" :total="total" style="float:right;">
-            </el-pagination>
-        </el-col>-->
+                <el-pagination layout="prev, pager, next" @current-change="handleCurrentChange" :page-size="20" :total="total" style="float:right;">
+                </el-pagination>
+            </el-col>-->
 
     </section>
 </template>
@@ -148,7 +148,7 @@ export default {
             editFormVisible: false,//编辑界面是否显示
             editLoading: false,
             editFormRules: {
-               
+
             },
             //编辑界面数据
             editForm: {
@@ -210,13 +210,13 @@ export default {
         //删除
         handleDel: function(index, row) {
             var _orderType = 0
-            if(row.model == "scavenger.repairorder"){
+            if (row.model == "scavenger.repairorder") {
                 _orderType = 1
-            } else if (row.model == "scavenger.recycleorder"){
+            } else if (row.model == "scavenger.recycleorder") {
                 _orderType = 2
             }
             this.listLoading = true;
-            var para = { orderID:row.pk, orderType: _orderType, status:2 }
+            var para = { orderID: row.pk, orderType: _orderType, status: 2 }
             this.$http.post(host + "setOrderStatus/", JSON.stringify(para), { headers: "Content-Type:application/json" }).then(function(response) {
                 this.listLoading = false;
                 console.log(response)
@@ -244,16 +244,16 @@ export default {
             var _id = this.villas[index].brandID
             this.$router.push({ name: '型号', path: '/form', params: { id: _id } })
         },
-        handleAccept: function(index, row){
+        handleAccept: function(index, row) {
             console.log(row)
             var _orderType = 0
-            if(row.model == "scavenger.repairorder"){
+            if (row.model == "scavenger.repairorder") {
                 _orderType = 1
-            } else if (row.model == "scavenger.recycleorder"){
+            } else if (row.model == "scavenger.recycleorder") {
                 _orderType = 2
             }
             this.listLoading = true;
-            var para = { orderID:row.pk, orderType: _orderType, status:3 }
+            var para = { orderID: row.pk, orderType: _orderType, status: 3 }
             this.$http.post(host + "setOrderStatus/", JSON.stringify(para), { headers: "Content-Type:application/json" }).then(function(response) {
                 this.listLoading = false;
                 console.log(response)
@@ -321,20 +321,25 @@ export default {
             this.objects = []
             getAllOrder().then((res) => {
                 console.log(res.data)
-                this.objects = res.data  
+                this.objects = res.data
             })
         },
-        commentSubmit:function(){
+        commentSubmit: function() {
             console.log(this.editForm)
             var _orderType = 0
-            if(this.editForm.model == "scavenger.repairorder"){
+            if (this.editForm.model == "scavenger.repairorder") {
                 _orderType = 1
-            } else if (this.editForm.model == "scavenger.recycleorder"){
+            } else if (this.editForm.model == "scavenger.recycleorder") {
                 _orderType = 2
             }
             var para = { orderID: this.editForm.orderID, orderType: _orderType, staffComment: this.editForm._staffComment }
             this.$http.post(host + "setOrderStaffComment/", JSON.stringify(para), { headers: "Content-Type:application/json" }).then(function(response) {
                 console.log(response)
+                this.$message({
+                    showClose: true,
+                    message: '备注成功',
+                    type: 'success'
+                });
             }).catch(function(error) {
                 console.log(error)
             })
