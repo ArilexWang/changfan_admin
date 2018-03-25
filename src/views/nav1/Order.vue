@@ -11,7 +11,7 @@
                     <el-input v-model="filters.name" placeholder="订单信息"></el-input>
                 </el-form-item>
                 <el-form-item>
-                    <el-button type="primary" v-on:click="searchVillaByKey">查询</el-button>
+                    <el-button type="primary">查询</el-button>
                 </el-form-item>
                 
             </el-form>
@@ -33,10 +33,12 @@
             </el-table-column>
             <el-table-column prop="fields._serveTime" label="预约时间" width="140" sortable>
             </el-table-column>
+            <el-table-column prop="fields._staffComment" label="备注" width="140" sortable>
+            </el-table-column>
 
             <el-table-column label="操作" width="300">
                 <template scope="scope">
-                    <el-button size="small" @click="handleEdit(scope.$index, scope.row)">查看详细信息</el-button>
+                    <el-button size="small" @click="handleEdit(scope.$index, scope.row)">详情</el-button>
                     <el-button v-if="scope.row.fields._orderStatus === 0" size="small" @click="handleAccept(scope.$index,scope.row)">接单</el-button>
                     <el-button v-if="scope.row.fields._orderStatus === 3" size="small">已接单</el-button>
                     <el-button v-if="scope.row.fields._orderStatus === 1" size="small">已支付</el-button>
@@ -50,19 +52,23 @@
         <el-dialog title="详细信息" v-model="editFormVisible" :close-on-click-modal="false">
             <el-form :model="editForm" label-width="80px" :rules="editFormRules" ref="editForm">
                 <el-form-item label="维修问题" prop="modelID">
-                    <el-input v-model="editForm._detailName" auto-complete="off"></el-input>
+                    <el-input v-model="editForm._detailName" readonly="true" auto-complete="off"></el-input>
                 </el-form-item>
                 <el-form-item label="联系人" prop="categoryID">
-                    <el-input v-model="editForm._userName" auto-complete="off"></el-input>
+                    <el-input v-model="editForm._userName" readonly="true" auto-complete="off"></el-input>
                 </el-form-item>
                 <el-form-item label="联系方式" prop="name">
-                    <el-input v-model="editForm._contactTel" auto-complete="off"></el-input>
+                    <el-input v-model="editForm._contactTel" readonly="true" auto-complete="off"></el-input>
                 </el-form-item>
                 <el-form-item label="维修地址" prop="price">
-                    <el-input v-model="editForm._address" auto-complete="off"></el-input>
+                    <el-input v-model="editForm._address" readonly="true" auto-complete="off"></el-input>
                 </el-form-item>
                 <el-form-item label="维修方式" prop="repairMethod">
-                    <el-input v-if="!editForm._orderType" value="上门维修" auto-complete="off"></el-input>
+                    <el-input v-if="!editForm._orderType" readonly="true" value="上门维修" auto-complete="off"></el-input>
+                </el-form-item>
+                <el-form-item label="备注" prop="price">
+                    <el-input v-model="editForm._staffComment" auto-complete="off"></el-input>
+                    <el-button @click.native="commentSubmit" style="margin-top:10px">保存备注</el-button>
                 </el-form-item>
                
             </el-form>
@@ -108,10 +114,10 @@
         </el-dialog>
 
         <!--工具条-->
-        <el-col :span="24" class="toolbar">
+        <!--<el-col :span="24" class="toolbar">
             <el-pagination layout="prev, pager, next" @current-change="handleCurrentChange" :page-size="20" :total="total" style="float:right;">
             </el-pagination>
-        </el-col>
+        </el-col>-->
 
     </section>
 </template>
@@ -142,9 +148,7 @@ export default {
             editFormVisible: false,//编辑界面是否显示
             editLoading: false,
             editFormRules: {
-                name: [
-                    { required: true, message: '请输入姓名', trigger: 'blur' }
-                ]
+               
             },
             //编辑界面数据
             editForm: {
@@ -226,6 +230,8 @@ export default {
             this.editFormVisible = true;
             // console.log(row)
             this.editForm = Object.assign({}, row.fields);
+            this.editForm.orderID = row.pk;
+            this.editForm.model = row.model;
         },
         //显示新增界面
         handleAdd: function() {
@@ -261,6 +267,7 @@ export default {
         editSubmit: function() {
             this.$refs.editForm.validate((valid) => {
                 this.editFormVisible = false;
+                this.getMalfunctionDetail();
             });
         },
         //新增
@@ -316,6 +323,22 @@ export default {
                 console.log(res.data)
                 this.objects = res.data  
             })
+        },
+        commentSubmit:function(){
+            console.log(this.editForm)
+            var _orderType = 0
+            if(this.editForm.model == "scavenger.repairorder"){
+                _orderType = 1
+            } else if (this.editForm.model == "scavenger.recycleorder"){
+                _orderType = 2
+            }
+            var para = { orderID: this.editForm.orderID, orderType: _orderType, staffComment: this.editForm._staffComment }
+            this.$http.post(host + "setOrderStaffComment/", JSON.stringify(para), { headers: "Content-Type:application/json" }).then(function(response) {
+                console.log(response)
+            }).catch(function(error) {
+                console.log(error)
+            })
+
         }
     },
 
