@@ -32,10 +32,11 @@
 			</el-table-column>
 			<el-table-column prop="brandID" label="ID" width="120" sortable>
 			</el-table-column>
-			<el-table-column label="操作" width="300">
+			<el-table-column label="操作" width="350">
 				<template scope="scope">
 					<el-button size="small" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
 					<el-button size="small" @click="handleComment(scope.$index,scope.row)">查看型号</el-button>
+					<el-button size="small" @click="recycleClick(scope.$index,scope.row)">查看回收机型</el-button>
 					<el-button type="danger" size="small" @click="handleDel(scope.$index, scope.row)">删除</el-button>
 				</template>
 			</el-table-column>
@@ -260,6 +261,11 @@ export default {
 			var _id = this.villas[index].brandID
 			var _name = this.villas[index].name
 			this.$router.push({ name: '型号', path: '/form', params: { id: _id,name: _name} })
+		},
+		recycleClick: function(index, row) {
+			var _id = this.villas[index].brandID
+			var _name = this.villas[index].name
+			this.$router.push({ name: '回收机型', path: '/page4', params: { id: _id,name: _name} })
 		},
 		getBrands: function() {
 			this.villas = []

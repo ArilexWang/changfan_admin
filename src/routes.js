@@ -14,6 +14,7 @@ import Banner from './views/nav1/Banner.vue'
 import Branch from './views/nav1/Branch.vue'
 import MalfunctionDetail from './views/nav1/MalfunctionDetail.vue'
 import Order from './views/nav1/Order.vue'
+import Recycle from './views/nav2/Recycle.vue'
 
 let routes = [
     {
@@ -33,7 +34,7 @@ let routes = [
     {
         path: '/',
         component: Home,
-        name: '导航一',
+        name: '维修信息',
         iconCls: 'el-icon-message',//图标样式class
         children: [
             { path: '/main', component: Main, name: 'main', hidden: true },
@@ -50,11 +51,13 @@ let routes = [
     {
         path: '/',
         component: Home,
-        name: '导航二',
+        name: '回收信息',
         iconCls: 'fa fa-id-card-o',
         children: [
-            { path: '/page4', component: Page4, name: '页面4' },
-            { path: '/page5', component: Page5, name: '页面5' }
+            { path: '/recycle', component: Recycle, name: '回收品牌' },
+            { path: '/page4', component: Page4, name: '回收机型' },
+            { path: '/page5', component: Page5, name: '回收设置' }
+            
         ]
     },
     {
