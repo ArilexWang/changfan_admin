@@ -380,7 +380,7 @@ export default {
             }
             else if (page == 5) {
                 this.objects.forEach(function(element) {
-                    if (element.brandName === " 三星") {
+                    if (element.brandName === "  三星") {
                         _objects.push(element)
                     }
                 }, this);
